@@ -1,8 +1,7 @@
 "use strict";
-// var actions = require('../actions1.js')
 var co = require('co');
-// var config = require('../configs.json')
 var extract = require('./extractors');
+var amqp = require('amqplib/callback_api');
 
 
 
@@ -18,6 +17,28 @@ var extract = require('./extractors');
 
 var Nightmare = require('nightmare');
 var nightmare = Nightmare({show: false});
+var rabbitConn = function() {
+	return amqp.connect('amqp://localhost', function(err, conn) {
+		conn.createChannel(function(err, ch) {
+			var q = 'hello';
+			ch.assertQueue(q, {durable:false});
+			return ch
+		})
+	})
+}
+// var rabbitSend = co.wrap(function* (data) {
+// 	amqp.connect('amqp://localhost', function(err, conn) {
+// 		conn.createChannel(function(err, ch) {
+// 			var q = 'hello';
+
+// 			ch.assertQueue(q, {durable:false});
+// 			ch.sendToQueue(q, new Buffer(data));
+// 			console.log(' data has been sent... ');
+// 		});
+// 		setTimeout(function() {conn.close(); process.exit(0)}, 500);
+// 	});
+// })
+
 
 
 var fn = co.wrap(function* () {
@@ -31,7 +52,7 @@ var fn = co.wrap(function* () {
 			.then((x) => {console.log(x)})
 			.catch((err) => {console.log(err)})
 	)};
-		yield Promise.resolve(nightmare.end())
+	yield Promise.resolve(nightmare.end())
 })
 
 
