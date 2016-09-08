@@ -1,0 +1,17 @@
+{
+  "name": "rabbitNode",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.4.2",
+    "co": "^4.6.0",
+    "nightmare": "^2.7.0"
+  }
+}
