@@ -32,44 +32,58 @@ var co = require('co');
  
 // Publisher 
 // this script works. it sends the message through. however, it will not close. 
-// var rabbitConn = co.wrap(function* () {
-// 	var open = require('amqplib').connect('amqp://localhost');
-// 	var q = 'hello';
-// 	yield Promise.resolve(open.then(function(conn) {
-// 		  return conn.createChannel();
-// 		})
-// 		.then(function(ch) {
-// 		  return ch.assertQueue(q, {durable:false}).then(function(ok) {
-// 		    return ch.sendToQueue(q, new Buffer('something to do'));
-// 		  })
-// 		})
-// 		.catch(console.warn))
-// })
-// rabbitConn().then((x) => {
+var rabbitConn = co.wrap(function* () {
+	var open = require('amqplib').connect('amqp://localhost');
+	var q = 'hello';
+	yield Promise.resolve(open
+		.then(function(conn) {
+			return conn.createChannel();
+		})
+		.then(function(ch) {
+			return ch.assertQueue(q, {durable:false})
+				.then(function(ok) {
+					console.log('sending message now...')
+					return ch.sendToQueue(q, new Buffer('something to do'));
+				})
+				.then((result) => {
+					console.log('message has been sent', result); 
+					return ch;
+					// setTimeout(function() {ch.close(); process.exit(0)}, 500);  // <<<<< this works. but it closes within the function
+			})
+		})
+		.catch(console.warn))
+})
+
+rabbitConn().then((ch) => {console.log(ch)})  // <<<<  want to close it here. but ch is 'undefined'
+// rabbitConn().then((ch) => {
 // 	Promise.resolve(rabbitConn.close())  // this does not register.. the program will just remain and not close
 // 	.then(() => {console.log('message sent')})
 // 	.catch((e) => {console.log(e)})  
 // })
-	// console.log(x);
-	// console.log('message sent...')})
+// 	console.log(x);
+// 	console.log('message sent...')}
 
-var open = require('amqplib').connect('amqp://localhost');
-var q = 'hello'
-open.then(function(conn) {
-	return conn.createChannel();
-})
-.then(function(ch) { // <<<<<<<<<< this ch does not get passed down. this is the right ch
-	return ch.assertQueue(q, {durable:false})
-	.then(function() {
-		// ch.close()  // <<<<< this closes the channel. the ch here is received...
-		return ch.sendToQueue(q, new Buffer('some data'));
-	})
-	.then((ch) => {console.log(ch); return ch})  // <<<<<<<<<<<<<  need to pass here
-})
-.then(function(ch) {
-	console.log('message')
-	console.log(ch);
+// var open = require('amqplib').connect('amqp://localhost');
+// var q = 'hello'
+// open.then(function(conn) {
+// 	return conn.createChannel();
+// })
+// .then(function(ch) { // <<<<<<<<<< this ch does not get passed down. this is the right ch
+// 	return ch.assertQueue(q, {durable:false})
+// 	.then(function() {
+// 		console.log('sending message now...')
+// 		return ch.sendToQueue(q, new Buffer('this is the data data'));
+// 	})
+// 	.then((result) => {
+// 		console.log('message sent: ', result) 
+// 		console.log('closing channel now...')
+// 		return ch.close()
+// 		})  // <<<<<<<<<<<<<  need to pass here
+// })
+// .then(function(ch) {
+// 	console.log('message is ready........')
+	// console.log(ch);
 	// ch.close();   // <<<<<<<<<<<   I intend to close here but unable to do so as ch undefined
 	// process.exit(0)
-})
+// })
 
