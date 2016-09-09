@@ -31,7 +31,7 @@ function imageBufferUpload(path, imageName, contentType) {
 // imageBufferUpload('./image1.jpg', 'csimage1.jpg')
 var request = require('request')
 
-function upload(url, key, type) {
+exports.upload = function(url, key, type) {
 	function downloadImageBuffer(url, callback) {
 		let params = {
 			method: 'GET', 
@@ -58,4 +58,4 @@ function upload(url, key, type) {
 	})
 }
 
-upload('https://upload.wikimedia.org/wikipedia/en/d/d2/Gears_of_War_logo.PNG', 'cs2000', 'image/jpg')
+// upload('https://upload.wikimedia.org/wikipedia/en/d/d2/Gears_of_War_logo.PNG', 'cs2000', 'image/jpg')
