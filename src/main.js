@@ -42,7 +42,7 @@ var rabbitConn = function() {
 
 
 
-var fn = co.wrap(function* (broker) {
+var amphasisDesign = co.wrap(function* (broker) {
 	for (let x = 3200; x < 3210; x++) {
 		console.log('initiating now...', x);
 		let url = "http://www.amphasisdesign.com/product-detail.php?productid=" + x;
@@ -60,16 +60,17 @@ var fn = co.wrap(function* (broker) {
 })
 
 
-// fn(broker.connectBroker).then((x) => {console.log('ended...', x)})
+amphasisDesign(broker.connectBroker).then((x) => {console.log('ended...', x)})
 
-
-nightmare
-	.goto(C.reddit.url)
-	.evaluate(extract.extract)
-	.then((x) => {
-		console.log(x);
-		return nightmare.end();
-	})
-	.then(() => {
-		console.log('end...');
-	})
+function Reddit() {
+	return nightmare
+		.goto(C.reddit.url)
+		.evaluate(extract.extract)
+		.then((x) => {
+			console.log(x);
+			return nightmare.end();
+		})
+		.then(() => {
+			console.log('end...');
+		})
+}
