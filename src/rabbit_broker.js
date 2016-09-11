@@ -1,16 +1,19 @@
 var amqp = require('amqplib/callback_api');
 
+
 exports.connectBroker = function(msg) {
 	amqp.connect('amqp://localhost', function(err, conn) {
 	  conn.createChannel(function(err, ch) {
-	    var q = 'task_queue';
-	    // var msg = process.argv.slice(2).join(' ') || "Hello World!";
+	    var q1 = 'task_queue';
+	    ch.assertQueue(q1, {durable: true});
+	    ch.sendToQueue(q1, new Buffer(msg), {persistent: true});
+	    console.log("Data sent to queue: '%s'", q1);
 
-	    ch.assertQueue(q, {durable: true});
-	    ch.sendToQueue(q, new Buffer(msg), {persistent: true});
-	    console.log(" [x] Sent '%s'", msg);
+	    var q2 = 'mongo_queue';
+	    ch.assertQueue(q2, {durable: true});
+	    ch.sendToQueue(q2, new Buffer(msg), {persistent: true});
+	    console.log('Data sent to queue: ', q2)
 	  });
-	  // setTimeout(function() { conn.close(); process.exit(0) }, 500);
 	});
 }
 

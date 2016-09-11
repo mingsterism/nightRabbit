@@ -1,0 +1,8 @@
+{
+	"mongoDB": {
+		"dbName": "test",
+		"ip": "128.199.128.229",
+		"port": "27017",
+		"collection": "productImg1"
+  	}
+}
